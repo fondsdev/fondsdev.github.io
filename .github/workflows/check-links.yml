@@ -1,0 +1,30 @@
+name: check links
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  # Weekly, because the two halves of this check move independently: a rename
+  # in fonds produces no event in this repo, so a push trigger would never see
+  # it. Off-the-hour to avoid the congestion GitHub gets at :00.
+  schedule:
+    - cron: "17 6 * * 1"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # A plain clone rather than actions/checkout with `repository:` — fonds
+      # is public, so this needs no token and sidesteps the cross-repo scoping
+      # of the default GITHUB_TOKEN entirely.
+      - name: Clone fonds
+        run: git clone --depth 1 https://github.com/fondsdev/fonds "$RUNNER_TEMP/fonds"
+
+      - name: Check the page against it
+        run: python3 tools/check_links.py "$RUNNER_TEMP/fonds"
+
+      - name: Test the guard itself
+        run: python3 -m unittest discover -s tests -v
