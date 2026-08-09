@@ -131,6 +131,20 @@ footer {
   border-top: 1px solid var(--rule);
   color: var(--dim);
 }
+h1::before, footer::before {
+  content: "§" attr(data-sec);
+  display: block;
+  font-size: 12.5px;
+  letter-spacing: .16em;
+  color: var(--dim);
+  margin-bottom: .75rem;
+}
+h2::before {
+  content: "§" attr(data-sec) "  ";
+  color: var(--dim);
+}
+h2[data-sec="04"] { border-bottom-color: var(--accent); }
+h2[data-sec="04"]::after { content: "  ▸"; color: var(--accent); }
 </style>
 </head>
 <body>
@@ -139,7 +153,7 @@ footer {
 
 <main>
 
-<h1>Your meetings, recorded and transcribed on your own machine.</h1>
+<h1 data-sec="01">Your meetings, recorded and transcribed on your own machine.</h1>
 
 <p class="lede">Captures your Mac's microphone and system audio as
 <em>separate tracks</em>, transcribes them locally, names the speakers it knows
@@ -157,7 +171,7 @@ pip install -e .</code></pre>
 <span>MIT licensed</span><span>macOS 14.4+</span><span>no account required</span><span><a href="https://github.com/fondsdev/fonds">source on GitHub</a></span>
 </p>
 
-<h2>Three commands, no hardware</h2>
+<h2 data-sec="02">Three commands, no hardware</h2>
 
 <div class="copy-wrap">
 <pre><code id="firstrun">fonds desktop record --duration 60
@@ -173,7 +187,7 @@ need no PLAUD hardware at all; see
 <a href="https://github.com/fondsdev/fonds/blob/main/docs/install.md">docs/install.md</a>
 for the full prerequisites.</p>
 
-<h2>Every byte that leaves your machine</h2>
+<h2 data-sec="03">Every byte that leaves your machine</h2>
 
 <p>ASR and diarization run locally. Speaker matching is arithmetic against
 stored voiceprints — it does not even load a model. Several commands
@@ -201,7 +215,7 @@ conflict is simply reported as unresolved.</p>
 has the field-by-field version, every file written and its mode, and what each
 credential grants.</p>
 
-<h2>Separate tracks are the quality argument</h2>
+<h2 data-sec="04">Separate tracks are the quality argument</h2>
 
 <p>When you record your own Mac, your microphone and the far end land in
 <em>different files</em>, so the "me versus them" split is physical rather than
@@ -209,7 +223,7 @@ inferred — no diarization error at all on the distinction that matters most.
 Remote participants arrive already close-mic'd and noise-suppressed by their
 own devices, at 48 kHz instead of a wearable's 16 kHz.</p>
 
-<h2>What it does</h2>
+<h2 data-sec="05">What it does</h2>
 
 <p>Five of the six capabilities need no PLAUD hardware at all.</p>
 
@@ -225,7 +239,7 @@ own devices, at 48 kHz instead of a wearable's 16 kHz.</p>
 </tbody>
 </table>
 
-<h2>And the pin, if you have one</h2>
+<h2 data-sec="06">And the pin, if you have one</h2>
 
 <p>Existing open-source PLAUD clients target the older <strong>PLAUD Note</strong>
 and do nothing on a NotePin S: the device accepts your writes and answers nothing at
@@ -240,7 +254,7 @@ encrypted at rest. <code>fonds</code> implements all three layers.</p>
 how it was worked out, dead ends included, is in
 <a href="https://github.com/fondsdev/fonds/blob/main/docs/discovery.md">docs/discovery.md</a>.</p>
 
-<h2>Limits</h2>
+<h2 data-sec="07">Limits</h2>
 
 <ul>
 <li>Only tested on a <strong>NotePin S</strong>. The NotePin, NotePro and Note are recognised by serial prefix but unverified.</li>
@@ -252,7 +266,7 @@ how it was worked out, dead ends included, is in
 
 </main>
 
-<footer>
+<footer data-sec="08">
 <p><a href="https://github.com/fondsdev/fonds/blob/main/LICENSE">MIT licensed</a>.
 Clean-room implementation, not affiliated with, endorsed by, or sponsored by
 PLAUD.</p>
