@@ -76,6 +76,8 @@ th { font-weight: 600; white-space: nowrap; }
 }
 .copy-wrap button:hover { color: var(--ink); }
 footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: .875rem; color: var(--muted); }
+ul { padding-left: 1.2rem; }
+li { margin: .4rem 0; }
 </style>
 </head>
 <body>
@@ -118,7 +120,96 @@ need no PLAUD hardware at all; see
 <a href="https://github.com/fondsdev/fonds/blob/main/docs/install.md">docs/install.md</a>
 for the full prerequisites.</p>
 
+<h2>Every byte that leaves your machine</h2>
+
+<p>ASR and diarization run locally. Speaker matching is arithmetic against
+stored voiceprints — it does not even load a model. Several commands
+<em>do</em> use the network, and this is all of them:</p>
+
+<table>
+<thead><tr><th>When</th><th>Where</th><th>What goes out</th></tr></thead>
+<tbody>
+<tr><td><code>pin auth</code></td><td>PLAUD's developer API</td><td>your serial, client id and secret key — never a recording</td></tr>
+<tr><td><code>rec transcribe</code>, first run per model</td><td><code>huggingface.co</code></td><td>a model download, authenticated with your <code>HF_TOKEN</code></td></tr>
+<tr><td><code>calendar auth</code></td><td>Google's OAuth endpoints</td><td>the consent flow; grants read-only <code>calendar.readonly</code></td></tr>
+<tr><td><code>calendar match</code></td><td><code>googleapis.com</code></td><td>a read of your calendar for the days you recorded on</td></tr>
+<tr><td><code>--llm</code> <strong>only</strong></td><td>Anthropic's API</td><td>opt-in, and the only path that transmits anything derived from a recording</td></tr>
+</tbody>
+</table>
+
+<p><code>--llm</code> is used only when the clock and the local transcript
+cannot separate two overlapping meetings. It sends candidate meeting titles,
+their local times, attendee first-name tokens, and up to ~4000 characters of
+the transcript covering the stretch those meetings span. Never email addresses,
+never audio, never transcript outside that stretch. Without it, an unresolved
+conflict is simply reported as unresolved.</p>
+
+<p><a href="https://github.com/fondsdev/fonds/blob/main/docs/security.md">docs/security.md</a>
+has the field-by-field version, every file written and its mode, and what each
+credential grants.</p>
+
+<h2>Separate tracks are the quality argument</h2>
+
+<p>When you record your own Mac, your microphone and the far end land in
+<em>different files</em>, so the "me versus them" split is physical rather than
+inferred — no diarization error at all on the distinction that matters most.
+Remote participants arrive already close-mic'd and noise-suppressed by their
+own devices, at 48 kHz instead of a wearable's 16 kHz.</p>
+
+<h2>What it does</h2>
+
+<p>Five of the six capabilities need no PLAUD hardware at all.</p>
+
+<table>
+<thead><tr><th></th><th>Command</th><th>Needs</th><th>Guide</th></tr></thead>
+<tbody>
+<tr><td>Record this Mac — mic and system audio as separate tracks</td><td><code>fonds desktop record</code></td><td>macOS 14.4+</td><td><a href="https://github.com/fondsdev/fonds/blob/main/docs/mac.md">mac.md</a></td></tr>
+<tr><td>Notice a call starting and offer to record it</td><td><code>fonds desktop watch</code></td><td>macOS 14.4+</td><td><a href="https://github.com/fondsdev/fonds/blob/main/docs/mac.md">mac.md</a></td></tr>
+<tr><td>Transcribe and split it by speaker</td><td><code>fonds rec transcribe</code></td><td><code>[transcribe]</code> extra, HF token</td><td><a href="https://github.com/fondsdev/fonds/blob/main/docs/transcripts.md">transcripts.md</a></td></tr>
+<tr><td>Name the voices you have enrolled</td><td><code>fonds speakers identify</code></td><td>a transcript</td><td><a href="https://github.com/fondsdev/fonds/blob/main/docs/transcripts.md">transcripts.md</a></td></tr>
+<tr><td>Say which meeting a recording was</td><td><code>fonds calendar match</code></td><td><code>[calendar]</code> extra, Google auth</td><td><a href="https://github.com/fondsdev/fonds/blob/main/docs/transcripts.md">transcripts.md</a></td></tr>
+<tr><td>Sync recordings off a PLAUD NotePin S</td><td><code>fonds pin download</code></td><td>the device, PLAUD partner credentials</td><td><a href="https://github.com/fondsdev/fonds/blob/main/docs/pin.md">pin.md</a></td></tr>
+</tbody>
+</table>
+
+<h2>And the pin, if you have one</h2>
+
+<p>Existing open-source PLAUD clients target the older PLAUD Note and do
+nothing on a NotePin S: the device accepts your writes and answers nothing at
+all, including commands that need no authentication. The reason is an
+<strong>RSA pre-handshake</strong> the Note never had. Until it completes the
+device ignores everything; after it completes the whole BLE link is
+ChaCha20-Poly1305 encrypted, and the recordings themselves are individually
+encrypted at rest. <code>fonds</code> implements all three layers.</p>
+
+<p>The full protocol is in
+<a href="https://github.com/fondsdev/fonds/blob/main/docs/protocol.md">docs/protocol.md</a>;
+how it was worked out, dead ends included, is in
+<a href="https://github.com/fondsdev/fonds/blob/main/docs/discovery.md">docs/discovery.md</a>.</p>
+
+<h2>Limits</h2>
+
+<ul>
+<li>Only tested on a <strong>NotePin S</strong>. The NotePin, NotePro and Note are recognised by serial prefix but unverified.</li>
+<li>No WiFi fast transfer — BLE runs at 20–30 KB/s, so a long recording takes a while to pull off the device.</li>
+<li>Transcription is <strong>local only</strong>. The backend interfaces are built for cloud providers, but none is implemented.</li>
+<li>Calendar matching is <strong>Google only</strong>. The <code>CalendarSource</code> protocol is built for others; macOS EventKit is the obvious second.</li>
+<li>Speaker identification <strong>names clusters, it does not fix them</strong>. A person the diarizer split across two clusters gets named twice.</li>
+</ul>
+
 </main>
+
+<footer>
+<p><a href="https://github.com/fondsdev/fonds/blob/main/LICENSE">MIT licensed</a>.
+Clean-room implementation, not affiliated with, endorsed by, or sponsored by
+PLAUD.</p>
+<p><strong>Recording other people is legally restricted</strong> in
+two-party-consent jurisdictions, and voiceprints are biometric data about other
+people — special-category data under GDPR Art.&nbsp;9, and covered by
+BIPA-style statutes in some US states.
+<a href="https://github.com/fondsdev/fonds/blob/main/docs/security.md">docs/security.md</a>
+has the detail; whether you have a lawful basis is your call.</p>
+</footer>
 
 <script>
 for (const button of document.querySelectorAll("button[data-copy]")) {
