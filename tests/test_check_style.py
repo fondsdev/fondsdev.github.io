@@ -51,6 +51,17 @@ class WeightTest(unittest.TestCase):
         problems = check_style.check(CLEAN + "h1 { font-weight: 600; }")
         self.assertTrue(any("font-weight" in p for p in problems))
 
+    def test_uncovered_bold_tag_is_reported(self):
+        """A page can ship bold with no `bold` anywhere in it."""
+        page = CLEAN + "<h1>Headline</h1>"
+        problems = check_style.check(page)
+        self.assertTrue(any("<h1>" in p for p in problems))
+
+    def test_covered_bold_tag_is_clean(self):
+        page = CLEAN.replace("strong, b { font-weight: inherit; }",
+                             "h1, strong, b { font-weight: inherit; }") + "<h1>Headline</h1>"
+        self.assertEqual(check_style.check(page), [])
+
 
 class ExternalRefTest(unittest.TestCase):
     def test_anchor_href_is_not_a_request(self):

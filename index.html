@@ -46,6 +46,7 @@ body {
   line-height: 1.62;
   font-variant-numeric: tabular-nums;
 }
+h1, h2, th, strong, b { font-weight: inherit; }
 h1, h2 { line-height: 1.3; margin: 0; }
 h1 { font-size: 24px; letter-spacing: .02em; margin: 0 0 1rem; }
 h2 {
@@ -60,12 +61,12 @@ p { margin: 1.25rem 0; }
 a {
   color: var(--ink);
   text-decoration: underline;
-  text-decoration-color: var(--rule);
+  text-decoration-color: var(--dim);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
 a:hover { text-decoration-color: var(--ink); }
-strong, b { font-weight: inherit; letter-spacing: .06em; }
+strong, b { letter-spacing: .06em; }
 em { font-style: italic; }
 code, pre { font-family: inherit; }
 code { background: var(--surface); padding: .1em .35em; border-radius: 2px; }
@@ -167,7 +168,7 @@ h2[data-sec="04"]::after { content: "  ▸"; color: var(--accent); }
 <body>
 
 <div class="lockup">
-<svg class="mark" viewBox="0 0 96 96" width="48" height="48" role="img" aria-label="fonds">
+<svg class="mark" viewBox="0 0 96 96" width="48" height="48" aria-hidden="true">
   <rect class="spn" x="16" y="20" width="8" height="56"/>
   <g class="rec">
     <rect x="32" y="20" width="14" height="8"/>

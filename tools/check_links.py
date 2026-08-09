@@ -19,7 +19,7 @@ CONSOLE_SCRIPT = "fonds"
 
 # https://github.com/fondsdev/fonds/blob/main/<path>, stopping at an anchor,
 # a quote, whitespace or a closing bracket.
-BLOB = re.compile(rf"https://github\.com/{REPO}/blob/main/([^\"'#\s>)]+)")
+BLOB = re.compile(rf"https://github\.com/{REPO}/blob/main/([^\"'#?\s>)]+)")
 
 # pip install -e '.[<extra>]', or a comma-list of them. The comma has to be in
 # the class: with `\w+` alone a line like '.[a,b]' matches nothing at all, and

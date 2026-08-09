@@ -22,10 +22,18 @@ ACCENT_USES = 3
 
 ACCENT = re.compile(r"var\(--accent\)")
 WEIGHT = re.compile(r"font-weight:\s*([^;}\s]+)")
-# A subresource the browser fetches: src=, url(), @import.
+# A subresource the browser fetches: src=, srcset=, url(), @import.
 SUBRESOURCE = re.compile(
-    r"""(?:src\s*=\s*["']|@import\s+url\(["']?|url\(["']?)(https?://[^"')\s]+)""",
+    r"""(?:src\s*=\s*["']|srcset\s*=\s*["']|@import\s+(?:url\()?["']?|url\(["']?)"""
+    r"""(https?://[^"')\s]+)""",
     re.IGNORECASE)
+
+# Tags a browser's own stylesheet renders bold. Neutralising them is not
+# optional: a page can ship a second weight without the word "bold" appearing
+# anywhere, which is exactly how this was missed the first time.
+UA_BOLD_TAGS = ("h1", "h2", "h3", "h4", "h5", "h6", "th", "strong", "b")
+
+INHERIT_RULE = re.compile(r"([^{}]+)\{[^{}]*font-weight:\s*inherit[^{}]*\}")
 
 LINK_TAG = re.compile(r"<link\b[^>]*>", re.IGNORECASE)
 ATTR = re.compile(r"""(\w+)\s*=\s*["']([^"']*)["']""")
@@ -64,6 +72,16 @@ def external_refs(page: str) -> list[str]:
     return found
 
 
+def unneutralised_bold_tags(page: str) -> list[str]:
+    """UA-bold tags the page uses that no `font-weight: inherit` rule covers."""
+    match = INHERIT_RULE.search(page)
+    covered = set()
+    if match:
+        covered = {s.strip() for s in match.group(1).replace("\n", " ").split(",")}
+    return [tag for tag in UA_BOLD_TAGS
+            if re.search(rf"<{tag}\b", page, re.IGNORECASE) and tag not in covered]
+
+
 def check(page: str) -> list[str]:
     problems = []
 
@@ -81,6 +99,11 @@ def check(page: str) -> list[str]:
 
     for ref in external_refs(page):
         problems.append(f"external subresource: {ref}")
+
+    for tag in unneutralised_bold_tags(page):
+        problems.append(
+            f"<{tag}> is used but not covered by the `font-weight: inherit` "
+            f"rule, so the browser's own stylesheet renders it bold")
 
     return problems
 
