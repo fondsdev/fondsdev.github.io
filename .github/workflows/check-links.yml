@@ -26,5 +26,8 @@ jobs:
       - name: Check the page against it
         run: python3 tools/check_links.py "$RUNNER_TEMP/fonds"
 
+      - name: Check the page against the identity
+        run: python3 tools/check_style.py
+
       - name: Test the guard itself
         run: python3 -m unittest discover -s tests -v
