@@ -21,8 +21,11 @@ CONSOLE_SCRIPT = "fonds"
 # a quote, whitespace or a closing bracket.
 BLOB = re.compile(rf"https://github\.com/{REPO}/blob/main/([^\"'#\s>)]+)")
 
-# pip install -e '.[<extra>]' — the only form the page is allowed to quote.
-EXTRA = re.compile(r"pip install -e '\.\[(\w+)\]'")
+# pip install -e '.[<extra>]', or a comma-list of them. The comma has to be in
+# the class: with `\w+` alone a line like '.[a,b]' matches nothing at all, and
+# a page carrying one valid extra elsewhere would sail past the empty-set guard
+# below having never checked it.
+EXTRA = re.compile(r"pip install -e '\.\[([\w,]+)\]'")
 
 
 def blob_paths(page: str) -> list[str]:
@@ -32,7 +35,10 @@ def blob_paths(page: str) -> list[str]:
 
 def quoted_extras(page: str) -> list[str]:
     """Every optional-dependency name the page tells the reader to install."""
-    return list(dict.fromkeys(EXTRA.findall(page)))
+    names = []
+    for match in EXTRA.findall(page):
+        names.extend(name for name in match.split(",") if name)
+    return list(dict.fromkeys(names))
 
 
 def check(page: str, checkout: Path) -> list[str]:

@@ -52,6 +52,12 @@ class ExtractionTest(unittest.TestCase):
     def test_finds_quoted_extras(self):
         self.assertEqual(check_links.quoted_extras(GOOD_PAGE), ["transcribe"])
 
+    def test_finds_each_name_in_a_comma_list(self):
+        """`\\w` alone would match none of this, letting it through unchecked."""
+        page = "pip install -e '.[transcribe,calendar]'"
+        self.assertEqual(check_links.quoted_extras(page),
+                         ["transcribe", "calendar"])
+
 
 class CheckTest(unittest.TestCase):
     def test_clean_page_has_no_problems(self):
