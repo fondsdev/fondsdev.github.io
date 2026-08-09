@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fonds — local-first meeting capture for your Mac</title>
+<meta name="description" content="Records your Mac's microphone and system audio as separate tracks, transcribes locally, names speakers by voice, and matches recordings to meetings. The audio never leaves your machine.">
+<style>
+:root {
+  --paper: #faf7f2;
+  --ink: #1c1a17;
+  --muted: #5f584e;
+  --rule: #ded6c9;
+  --accent: #7a3b2e;
+  --code-bg: #f1ece3;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #141310;
+    --ink: #e9e4da;
+    --muted: #9c9488;
+    --rule: #2f2b24;
+    --accent: #d9977c;
+    --code-bg: #1e1b16;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto;
+  max-width: 46rem;
+  padding: 3rem 1.25rem 5rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+h1, h2, h3 { line-height: 1.25; font-weight: 600; }
+h1 { font-size: 2.25rem; margin: 0 0 .75rem; letter-spacing: -.01em; }
+h2 {
+  font-size: 1.375rem;
+  margin: 3.5rem 0 1rem;
+  padding-bottom: .4rem;
+  border-bottom: 1px solid var(--rule);
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+code, pre, kbd {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .875em;
+}
+code { background: var(--code-bg); padding: .1em .35em; border-radius: 3px; }
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; font-size: .9375rem; display: block; overflow-x: auto; }
+th, td { text-align: left; padding: .55rem .7rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; white-space: nowrap; }
+.wordmark { font-size: 1.05rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 2rem; }
+.lede { font-size: 1.1875rem; color: var(--ink); margin: 0 0 1.75rem; }
+.status { font-size: .875rem; color: var(--muted); margin: 1rem 0 0; }
+.status span + span::before { content: " · "; }
+.copy-wrap { position: relative; }
+.copy-wrap button {
+  position: absolute; top: .5rem; right: .5rem;
+  font: inherit; font-size: .75rem;
+  background: var(--paper); color: var(--muted);
+  border: 1px solid var(--rule); border-radius: 4px;
+  padding: .2rem .5rem; cursor: pointer;
+}
+.copy-wrap button:hover { color: var(--ink); }
+footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: .875rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<p class="wordmark">fonds</p>
+
+<main>
+
+<h1>Your meetings, recorded and transcribed on your own machine.</h1>
+
+<p class="lede">Captures your Mac's microphone and system audio as
+<em>separate tracks</em>, transcribes them locally, names the speakers it knows
+by voice, and matches every recording to the meeting it belongs to. The audio
+never leaves your machine.</p>
+
+<div class="copy-wrap">
+<pre><code id="install">git clone https://github.com/fondsdev/fonds &amp;&amp; cd fonds
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -e .</code></pre>
+<button type="button" data-copy="install">copy</button>
+</div>
+
+<p class="status">
+<span>MIT licensed</span><span>macOS 14.4+</span><span>no account required</span><span><a href="https://github.com/fondsdev/fonds">source on GitHub</a></span>
+</p>
+
+<h2>Three commands, no hardware</h2>
+
+<div class="copy-wrap">
+<pre><code id="firstrun">fonds desktop record --duration 60
+fonds rec transcribe
+fonds rec show</code></pre>
+<button type="button" data-copy="firstrun">copy</button>
+</div>
+
+<p>Record a minute of this Mac, transcribe it, read it back. Transcription
+needs one extra — <code>pip install -e '.[transcribe]'</code> — and a
+Hugging&nbsp;Face token for the model download. Five of the six things
+<code>fonds</code> does need no PLAUD hardware at all; see
+<a href="https://github.com/fondsdev/fonds/blob/main/docs/install.md">docs/install.md</a>
+for the full prerequisites.</p>
+
+</main>
+
+<script>
+for (const button of document.querySelectorAll("button[data-copy]")) {
+  button.addEventListener("click", async () => {
+    const text = document.getElementById(button.dataset.copy).innerText;
+    try {
+      await navigator.clipboard.writeText(text);
+      button.textContent = "copied";
+      setTimeout(() => { button.textContent = "copy"; }, 1500);
+    } catch { button.textContent = "press ⌘C"; }
+  });
+}
+</script>
+
+</body>
+</html>
