@@ -3,15 +3,35 @@
 <style>
   html, body { margin: 0; width: 1200px; height: 630px; }
   body {
-    background: #faf7f2; color: #1c1a17;
-    font-family: ui-serif, Georgia, "Times New Roman", serif;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 0 5rem; box-sizing: border-box;
+    background: #0B0B0C;
+    color: #E8E6E1;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+                 Consolas, "Liberation Mono", monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 96px;
+    box-sizing: border-box;
   }
-  .mark { font-size: 1.5rem; letter-spacing: .2em; text-transform: uppercase; color: #5f584e; margin-bottom: 2rem; }
-  h1 { font-size: 4rem; line-height: 1.15; margin: 0 0 1.5rem; font-weight: 600; }
-  p { font-size: 1.75rem; color: #5f584e; margin: 0; }
+  .lockup { display: flex; align-items: center; gap: 12px; }
+  .wordmark { font-size: 96px; letter-spacing: .14em; }
+  h1 { font-size: 40px; letter-spacing: .02em; font-weight: inherit;
+       line-height: 1.3; margin: 56px 0 0; max-width: 22ch; }
+  p { font-size: 24px; letter-spacing: .06em; text-transform: uppercase;
+      color: #85827C; margin: 40px 0 0; }
 </style>
-<div class="mark">fonds</div>
+<div class="lockup">
+  <svg viewBox="0 0 96 96" width="140" height="140">
+    <rect fill="#E8A33D" x="16" y="20" width="8" height="56"/>
+    <g fill="#E8E6E1">
+      <rect x="32" y="20" width="14" height="8"/>
+      <rect x="32" y="32" width="10" height="8"/>
+      <rect x="32" y="44" width="36" height="8"/>
+      <rect x="32" y="56" width="48" height="8"/>
+      <rect x="32" y="68" width="6"  height="8"/>
+    </g>
+  </svg>
+  <span class="wordmark">fonds</span>
+</div>
 <h1>Your meetings, recorded and transcribed on your own machine.</h1>
 <p>Local-first capture for macOS · MIT</p>
