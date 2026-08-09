@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>fonds — local-first meeting capture for your Mac</title>
 <meta name="description" content="Records your Mac's microphone and system audio as separate tracks, transcribes locally, names speakers by voice, and matches recordings to meetings. The audio never leaves your machine.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://fonds.dev/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fonds.dev/">
+<meta property="og:title" content="fonds — local-first meeting capture for your Mac">
+<meta property="og:description" content="Records your Mac's microphone and system audio as separate tracks, transcribes locally, names speakers by voice, and matches recordings to meetings. The audio never leaves your machine.">
+<meta property="og:image" content="https://fonds.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 :root {
   --paper: #faf7f2;
@@ -174,8 +182,8 @@ own devices, at 48 kHz instead of a wearable's 16 kHz.</p>
 
 <h2>And the pin, if you have one</h2>
 
-<p>Existing open-source PLAUD clients target the older PLAUD Note and do
-nothing on a NotePin S: the device accepts your writes and answers nothing at
+<p>Existing open-source PLAUD clients target the older <strong>PLAUD Note</strong>
+and do nothing on a NotePin S: the device accepts your writes and answers nothing at
 all, including commands that need no authentication. The reason is an
 <strong>RSA pre-handshake</strong> the Note never had. Until it completes the
 device ignores everything; after it completes the whole BLE link is
