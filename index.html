@@ -145,11 +145,40 @@ h2::before {
 }
 h2[data-sec="04"] { border-bottom-color: var(--accent); }
 h2[data-sec="04"]::after { content: "  ▸"; color: var(--accent); }
+.lockup { display: flex; align-items: center; gap: 4px; margin: 0 0 2.5rem; }
+.mark { display: block; flex: none; }
+.mark .spn { fill: var(--accent); }
+.mark .rec { fill: var(--ink); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .mark rect { transform-box: fill-box; }
+  .mark .spn { transform-origin: top; animation: print-down .18s steps(6) both; }
+  .mark .rec rect { transform-origin: left; animation: print-across .12s steps(6) both; }
+  .mark .rec rect:nth-of-type(1) { animation-delay: .18s; }
+  .mark .rec rect:nth-of-type(2) { animation-delay: .24s; }
+  .mark .rec rect:nth-of-type(3) { animation-delay: .30s; }
+  .mark .rec rect:nth-of-type(4) { animation-delay: .36s; }
+  .mark .rec rect:nth-of-type(5) { animation-delay: .42s; }
+}
+@keyframes print-down   { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes print-across { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 </style>
 </head>
 <body>
 
+<div class="lockup">
+<svg class="mark" viewBox="0 0 96 96" width="48" height="48" role="img" aria-label="fonds">
+  <rect class="spn" x="16" y="20" width="8" height="56"/>
+  <g class="rec">
+    <rect x="32" y="20" width="14" height="8"/>
+    <rect x="32" y="32" width="10" height="8"/>
+    <rect x="32" y="44" width="36" height="8"/>
+    <rect x="32" y="56" width="48" height="8"/>
+    <rect x="32" y="68" width="6"  height="8"/>
+  </g>
+</svg>
 <p class="wordmark">fonds</p>
+</div>
 
 <main>
 
